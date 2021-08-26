@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>JWT Attacks</title>
+
+  <script type="module">
+    document.documentElement.classList.remove('no-js');
+    document.documentElement.classList.add('js');
+  </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles.css">
+
+
+  <meta name="description" content="Page description">
+  <meta property="og:title" content="Unique page title - My Site">
+  <meta property="og:description" content="Page description">
+  <meta property="og:image" content="https://www.mywebsite.com/image.jpg">
+  <meta property="og:image:alt" content="Image description">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:url" content="https://www.mywebsite.com/page">
+  <link rel="canonical" href="https://www.mywebsite.com/page">
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/my.webmanifest">
+  <meta name="theme-color" content="#FF00FF">
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">{JWT}.{Attacker}.</a>
+        
+        <div class="navbar" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="https://github.com/gianlucafrei/jwt-attacker">GitHub</a>
+              </li>
+          </ul>
+        </div>
+      </nav>
+
+      <main>
+        <div class="clearfix">
+            <p>Put here your JWT:</p>
+            <div class="inputContainer small">
+                <textarea
+                oninput="update(this, 'jwt-input-content', inputJwtChanged); sync_scroll(this, 'jwt-input-highlighting');" onscroll="sync_scroll(this, 'jwt-input-highlighting');"
+                class="prewrapbreakall editing small" id="jwt-input-editor" placeholder="Enter JWT (never leaves your browser)" spellcheck="false"
+                onkeydown="check_tab(this, event);">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</textarea>
+                <pre class="highlighting small" aria-hidden="true" id="jwt-input-highlighting"><code class="prewrapbreakall" id="jwt-input-content"></code></pre>
+            </div>
+
+
+            <p>Edit the content:</p>
+            <div class="inputContainer large">
+                <textarea
+                oninput="update(this, 'jwt-claims-content', inputClaimsChanged); sync_scroll(this, 'jwt-claims-highlighting');" onscroll="sync_scroll(this, 'jwt-claims-highlighting');"
+                class="prewrapbreakall editing large" id="jwt-claims-editor" placeholder="Enter JWT (never leaves your browser)" spellcheck="false"
+                onkeydown="check_tab(this, event);">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</textarea>
+                <pre class="highlighting large" aria-hidden="true" id="jwt-claims-highlighting"><code class="prewrapbreakall" id="jwt-claims-content"></code></pre>
+            </div>
+
+            <div class="control">
+                <p>Choose a method:</p>
+                <div class="inputContainer">
+                    <label class="radio">
+                        <input type="radio" id="noneAlgoMethod" checked="checked" name="group1" onclick="updateMethod()">
+                        None Algorithm
+                      </label>
+                      <label class="radio">
+                          <input type="radio" id="keepSignMethod" name="group1" onclick="updateMethod()">
+                          Keep old signature
+                        </label>
+                </div>
+              </div>
+
+            <p>Copy the forged token:</p>
+            <div class="inputContainer small">
+                <textarea
+                oninput="update(this, 'jwt-output-content', outputJwtChanged); sync_scroll(this, 'jwt-output-highlighting');" onscroll="sync_scroll(this, 'jwt-output-highlighting');"
+                class="prewrapbreakall editing small" id="jwt-output-editor" placeholder="Enter JWT (never leaves your browser)" spellcheck="false"
+                onkeydown="check_tab(this, event);">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</textarea>
+                <pre class="highlighting small" aria-hidden="true" id="jwt-output-highlighting"><code class="prewrapbreakall" id="jwt-output-content"></code></pre>
+            </div>
+        </div>
+      </main>
+
+      <script src="main.js"></script>
+</body>
+</html>
