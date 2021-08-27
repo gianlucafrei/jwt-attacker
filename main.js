@@ -2,17 +2,27 @@
         const jwtRegex = /(ey[A-Za-z0-9-_]*)(\.)(ey[A-Za-z0-9-_]*)(\.)([A-Za-z0-9-_]*)/m;
 
         function getJwt(jwtText){
+            
+            try{
+                let match = jwtText.match(jwtRegex);
+
+                if(!match)
+                    return undefined;
+
+                jwtTxt = match[0];
+                headerTxt = match[1];
+                payloadTxt = match[3];
+                signTxt = match[5];
+        
+                header = JSON.parse(atob(headerTxt));
+                payload = JSON.parse(atob(payloadTxt));
+            }
+            catch{
+                return undefined;
+            }
+            
     
-            let match = jwtText.match(jwtRegex);
-            if(!match) return undefined;
-    
-            jwtTxt = match[0];
-            headerTxt = match[1];
-            payloadTxt = match[3];
-            signTxt = match[5];
-    
-            header = JSON.parse(atob(headerTxt));
-            payload = JSON.parse(atob(payloadTxt));
+            
     
             return {
                 jwtTxt: jwtTxt,
@@ -50,16 +60,18 @@
     
         function inputJwtChanged(jwtInput){
     
+            let decodedToken = "invalid token";
             let jwt = getJwt(jwtInput);
             if(jwt){
                 console.log("JWT:" + jwt)
     
-                let decodedToken = JSON.stringify(jwt.header, null, 2) + ".\n" + JSON.stringify(jwt.payload, null, 2) + "\n." + jwt.signTxt;
-    
-                let claimsEditor = document.querySelector("#jwt-claims-editor");
-                claimsEditor.value = decodedToken;
-                update(claimsEditor, 'jwt-claims-content', inputClaimsChanged);
+                decodedToken = JSON.stringify(jwt.header, null, 2) + ".\n" + JSON.stringify(jwt.payload, null, 2) + "\n." + jwt.signTxt;
             }
+
+            // Update claims editor
+            let claimsEditor = document.querySelector("#jwt-claims-editor");
+            claimsEditor.value = decodedToken;
+            update(claimsEditor, 'jwt-claims-content', inputClaimsChanged);
     
             return highlightJwt(jwtInput);
         }
@@ -92,12 +104,20 @@
                     }
                 }
             }
-    
-            var prefix = claimsInput.substring(0, parsingResult.openings[0]);
-            var headerTxt = claimsInput.substring(parsingResult.openings[0], parsingResult.closings[0]);
-            var separator = claimsInput.substring(parsingResult.closings[0], parsingResult.openings[1]);
-            var claimsTxt = claimsInput.substring(parsingResult.openings[1], parsingResult.closings[1]);
-            var postfix = claimsInput.substring(parsingResult.closings[1], claimsInput.length);
+
+            var prefix, headerTxt, separator, claimsTxt, postfix;
+
+            if(parsingResult.openings.length == 2 && parsingResult.closings.length==2){
+                prefix = claimsInput.substring(0, parsingResult.openings[0]);
+                headerTxt = claimsInput.substring(parsingResult.openings[0], parsingResult.closings[0]);
+                separator = claimsInput.substring(parsingResult.closings[0], parsingResult.openings[1]);
+                claimsTxt = claimsInput.substring(parsingResult.openings[1], parsingResult.closings[1]);
+                postfix = claimsInput.substring(parsingResult.closings[1], claimsInput.length);
+            }
+            else{
+                
+                return undefined;
+            }
     
             return {
                 headerTxt: headerTxt,
@@ -132,7 +152,7 @@
                 claims = JSON.parse(claimsObj.claimsTxt);
             }
             catch (e) {
-                return "invalid claims"
+                return "invalid token"
             }
     
             if(document.querySelector("#noneAlgoMethod").checked){
@@ -153,6 +173,9 @@
             
             // Remove all newlines and spaces
             var claims = parseClaims(claimsInput);
+
+            if(! claims)
+                return claimsInput;
     
             var claimsHtml = claims.prefix;
             claimsHtml += '<span class="jwtHeader">' + claims.headerTxt + '</span>';
